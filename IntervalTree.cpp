@@ -122,9 +122,9 @@ void Node::rotation_left()  {
 
       this                   z
      /    \                 / \
-    %     z     -->     this   &
-         / \           /   \
-        t   &         %     t
+    %      z     -->     this   &
+          / \           /   \
+         t   &         %     t
 
     */
     if (this->right_child == nullptr) {

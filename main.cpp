@@ -24,6 +24,12 @@ int main() {
 
     IntervalTree& it_copy = it->copy();
     delete it;
+    it_copy.add(20, 21);
+    it_copy.add(21, 22);
+    it_copy.add(22, 23);
+    it_copy.add(23, 24);
+    it_copy.add(24, 25);
+    it_copy.add(25, 26);
     it_copy.dump();
 
     delete &it_copy;
