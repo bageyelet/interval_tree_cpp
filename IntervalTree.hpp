@@ -37,9 +37,12 @@ class Node {
 };
 
 class IntervalTree {
+    friend std::ostream& operator<<(std::ostream& o, const IntervalTree& i);
+
   public:
-    Node* root;
-    int   n;
+    Node*           root;
+    int                n;
+    long general_purpose;
 
     IntervalTree ();
     ~IntervalTree();

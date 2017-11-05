@@ -203,7 +203,7 @@ void Node::rebalance() {
         p->rebalance();
 }
 
-IntervalTree::IntervalTree() {
+IntervalTree::IntervalTree() : general_purpose(0){
     this->root = nullptr;
     this->n    = 0;
 }
@@ -273,30 +273,31 @@ IntervalTree& IntervalTree::copy() const {
     return *new_it;
 }
 
-void dumpR(Node* n, int tabs) {
-    for (int i=0; i<tabs; ++i) std::cout << "    ";
-    std::cout << *(n->i) << " p: ";
-    if (n->parent != nullptr) std::cout << *(n->parent->i);
-    else std::cout << "NULL";
-    std::cout << " m: " << n->max << " bf: " << n->balancing_factor() << "\n";
+void dumpR(Node* n, int tabs, std::ostream& o) {
+    for (int i=0; i<tabs; ++i) o << "    ";
+    o << *(n->i) << " p: ";
+    if (n->parent != nullptr) o << *(n->parent->i);
+    else o << "NULL";
+    o << " m: " << n->max << " bf: " << n->balancing_factor() << "\n";
 
     if (n->left_child  != nullptr) {
-        for (int i=0; i<tabs; ++i) std::cout << "    ";
-        std::cout << " Left:\n";
-        dumpR(n->left_child,  tabs+1);
+        for (int i=0; i<tabs; ++i) o << "    ";
+        o << " Left:\n";
+        dumpR(n->left_child,  tabs+1, o);
     }
     if (n->right_child != nullptr) {
-        for (int i=0; i<tabs; ++i) std::cout << "    ";
-        std::cout << " Right:\n";
-        dumpR(n->right_child, tabs+1);
+        for (int i=0; i<tabs; ++i) o << "    ";
+        o << " Right:\n";
+        dumpR(n->right_child, tabs+1, o);
     }
+}
+
+std::ostream& operator<<(std::ostream& o, const IntervalTree& i) {
+    dumpR(i.root, 0, o);
+    return o;
 }
 
 void IntervalTree::dump() {
     std::cout << "*** INTERVAL TREE ***\n";
-    if (this->root == nullptr)
-        std::cout << "empty tree\n";
-    else {
-        dumpR(this->root, 0);
-    }
+    std::cout << *this;
 }
