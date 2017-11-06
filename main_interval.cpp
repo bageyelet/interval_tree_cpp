@@ -19,7 +19,7 @@ class MyData : public Data {
         return o << "{" << this->x << "}";
     }
 
-    virtual Data& copy() const {
+    virtual Data& copy() {
         return *(new MyData(this->x));
     }
 };

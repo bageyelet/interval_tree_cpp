@@ -11,7 +11,7 @@ class Data {
 
     virtual bool operator==(const Data& that)    const = 0;
     virtual std::ostream& print(std::ostream& o) const = 0;
-    virtual Data& copy() const = 0;
+    virtual Data& copy() = 0;
 };
 
 class Interval {

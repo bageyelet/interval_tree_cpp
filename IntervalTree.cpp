@@ -1,6 +1,8 @@
 #include <iostream>
 #include "IntervalTree.hpp"
 
+// ********************** Node **********************
+
 Node::Node(Interval& i) {
     this->i           = &i;
     this->parent      = nullptr;
@@ -49,6 +51,15 @@ void  Node::search(const Interval& i, std::vector<Interval*>& ris) {
         this->left_child->search(i, ris);
     if (this->right_child != nullptr && this->i->begin <= i.end && this->right_child->max >= i.begin)
         this->right_child->search(i, ris);
+}
+
+void  Node::search_exact(const Interval& i, std::vector<Interval*>& ris) {
+    if (i.begin == this->i->begin && i.end == this->i->end) // do not use equal, it'll test also the data field
+        ris.push_back(this->i);
+    if (this->left_child != nullptr && this->left_child->max >= i.begin)
+        this->left_child ->search_exact(i, ris);
+    if (this->right_child != nullptr && this->i->begin <= i.end && this->right_child->max >= i.begin)
+        this->right_child->search_exact(i, ris);
 }
 
 Node& Node::copy() const {
@@ -203,6 +214,8 @@ void Node::rebalance() {
         p->rebalance();
 }
 
+// ********************** IntervalTree **********************
+
 IntervalTree::IntervalTree() : general_purpose(0){
     this->root = nullptr;
     this->n    = 0;
@@ -247,6 +260,27 @@ std::vector<Interval*>& IntervalTree::search(int begin, int end) const {
     return *ris;
 }
 
+std::vector<Interval*>& IntervalTree::search(int begin, int end, std::vector<Interval*>& ris) const {
+    if (this->root == nullptr) {
+        return ris;
+    }
+    Interval* i = new Interval(begin, end);
+    this->root->search(*i, ris);
+    delete i;
+    return ris;
+}
+
+std::vector<Interval*>& IntervalTree::search_exact(int begin, int end) const {
+    std::vector<Interval*>* ris = new std::vector<Interval*>();
+    if (this->root == nullptr) {
+        return *ris;
+    }
+    Interval* i = new Interval(begin, end);
+    this->root->search_exact(*i, *ris);
+    delete i;
+    return *ris;
+}
+
 Node* recursive_copy(Node* old_node, Node* parent) {
     Node* new_node = new Node(old_node->i->copy());
     new_node->parent      = parent;
@@ -276,7 +310,7 @@ IntervalTree& IntervalTree::copy() const {
 void dumpR(Node* n, int tabs, std::ostream& o) {
     for (int i=0; i<tabs; ++i) o << "    ";
     o << *(n->i) << " p: ";
-    if (n->parent != nullptr) o << *(n->parent->i);
+    if (n->parent != nullptr) o << "[" << n->parent->i->begin << ", " << n->parent->i->end << "]";
     else o << "NULL";
     o << " m: " << n->max << " bf: " << n->balancing_factor() << "\n";
 
@@ -293,7 +327,9 @@ void dumpR(Node* n, int tabs, std::ostream& o) {
 }
 
 std::ostream& operator<<(std::ostream& o, const IntervalTree& i) {
-    dumpR(i.root, 0, o);
+    if (i.root == nullptr)
+        o << "empty\n";
+    else dumpR(i.root, 0, o);
     return o;
 }
 

@@ -28,6 +28,7 @@ class Node {
 
     void  add(Interval& i);
     void  search(const Interval& i, std::vector<Interval*>& ris);
+    void  search_exact(const Interval& i, std::vector<Interval*>& ris);
     Node& copy() const;
 
   private:
@@ -50,6 +51,8 @@ class IntervalTree {
     void add(int begin, int end);
     void add(Interval& i);
     std::vector<Interval*>& search(int begin, int end) const;
+    std::vector<Interval*>& search(int begin, int end, std::vector<Interval*>& ris) const;
+    std::vector<Interval*>& search_exact(int begin, int end) const; // returns all intervals that have this begin and this end
     IntervalTree& copy() const;
 
     void dump();
