@@ -48,8 +48,12 @@ void Page::add(int begin, int end) {
 }
 
 void Page::add(int begin, int end, Data* data) {
-    assert(begin <= end);
+    if (data == nullptr) {
+        this->add(begin, end);
+        return;
+    }
 
+    assert(begin <= end);
     this->copy_on_write();
     Interval* new_interval = new Interval(begin, end, data);
     it->add(*new_interval);
