@@ -16,7 +16,7 @@ class Page : public Data {
     ~Page();
 
     void add(int begin, int end);
-    // void add(int begin, int end, Data* data);
+    void add(int begin, int end, Data* data);
     virtual bool operator==(const Data& that)    const; // equal if the same address
     virtual std::ostream& print(std::ostream& o) const;
     virtual Data& copy();
@@ -42,7 +42,7 @@ class PiTree {
     ~PiTree();
 
     void add(int begin, int end);
-    // void add(int begin, int end, Data* data);
+    void add(int begin, int end, Data* data);
     std::vector<Interval*>& search(int begin, int end) const;
     PiTree& copy();
 

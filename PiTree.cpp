@@ -47,6 +47,14 @@ void Page::add(int begin, int end) {
     it->add(begin, end);
 }
 
+void Page::add(int begin, int end, Data* data) {
+    assert(begin <= end);
+
+    this->copy_on_write();
+    Interval* new_interval = new Interval(begin, end, data);
+    it->add(*new_interval);
+}
+
 bool Page::operator==(const Data& that) const {
     const Page* p = dynamic_cast<const Page*> (&that);
 
@@ -127,7 +135,7 @@ Interval* PiTree::find_page(int begin, int end) {
     }
 }
 
-void PiTree::add(int begin, int end) {
+void PiTree::add(int begin, int end, Data* data) {
     assert(begin <= end);
 
     int p_begin = begin / this->page_size;
@@ -138,11 +146,17 @@ void PiTree::add(int begin, int end) {
     Interval* i = this->find_page(p_begin, p_end);
     if (i == nullptr) {
         Page* p = new Page(p_begin, p_end);
-        p->add(begin, end);
+        p->add(begin, end, data);
         i = new Interval(p_begin, p_end, p);
         this->pages->add(*i);
     } else
-        static_cast<Page*>(i->data)->add(begin, end);
+        static_cast<Page*>(i->data)->add(begin, end, data);
+}
+
+void PiTree::add(int begin, int end) {
+    assert(begin <= end);
+
+    this->add(begin, end, nullptr);
 }
 
 std::ostream& operator<<(std::ostream& o, const PiTree& i) {

@@ -2,6 +2,29 @@
 
 using namespace std;
 
+class MyData : public Data {
+  public:
+    int x;
+
+    MyData(int xx) : x(xx) {}
+    ~MyData() {}
+
+    virtual bool operator==(const Data& that) const {
+        const MyData* d = dynamic_cast<const MyData*> (&that);
+        if (! d)
+            return false;
+        return this->x == d->x;
+    }
+
+    virtual std::ostream& print(std::ostream& o) const {
+        return o << "{" << this->x << "}";
+    }
+
+    virtual Data& copy() {
+        return *(new MyData(this->x));
+    }
+};
+
 int main(int argc, char const *argv[]) {
     // Page* p = new Page(0, 1);
     // Interval i1(0, 1, p);
@@ -23,7 +46,7 @@ int main(int argc, char const *argv[]) {
 
     PiTree* pt = new PiTree();
     pt->add(1, 10);
-    pt->add(2, 20);
+    pt->add(2, 20, new MyData(15));
     pt->add(3, 30);
     pt->add(100, 200);
     pt->add(299, 10000);
@@ -40,6 +63,8 @@ int main(int argc, char const *argv[]) {
     cout << "\n\n" << pt2 << "\n";
 
     pt2.add(0, 4);
+    pt2.add(300, 500);
+    pt2.add(500, 700);
 
     cout << "\n\n" << *pt << "\n";
     cout << "\n\n" << pt2 << "\n"; 
