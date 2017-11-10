@@ -17,7 +17,7 @@ class Page : public Data {
 
     void add(int begin, int end);
     void add(int begin, int end, Data* data);
-    virtual bool operator==(const Data& that)    const; // equal if the same address
+    virtual bool operator==(const Data& that)    const; // equal if the two objects have the same address
     virtual std::ostream& print(std::ostream& o) const;
     virtual Data& copy();
 
